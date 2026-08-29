@@ -1,7 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { sql } from './_lib/db';
-import { verifyAdminRequest } from './_lib/auth';
-import { handlePreflight, methodNotAllowed, serverError, unauthorized } from './_lib/http';
+import { sql } from './_lib/db.js';
+import { verifyAdminRequest } from './_lib/auth.js';
+import { handlePreflight, methodNotAllowed, serverError, unauthorized } from './_lib/http.js';
 
 // The actual email delivery happens client-side via EmailJS. This endpoint
 // just keeps a durable record of every message submitted through the form.

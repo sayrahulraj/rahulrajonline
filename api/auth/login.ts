@@ -1,7 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { sql } from '../_lib/db';
-import { signAdminToken } from '../_lib/auth';
-import { handlePreflight, methodNotAllowed, serverError } from '../_lib/http';
+import { sql } from '../_lib/db.js.js';
+import { signAdminToken } from '../_lib/auth.js.js';
+import { handlePreflight, methodNotAllowed, serverError } from '../_lib/http.js.js';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (handlePreflight(req, res)) return;

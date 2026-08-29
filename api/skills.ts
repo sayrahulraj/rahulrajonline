@@ -1,7 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { sql } from './_lib/db';
-import { verifyAdminRequest } from './_lib/auth';
-import { handlePreflight, methodNotAllowed, serverError, unauthorized } from './_lib/http';
+import { sql } from './_lib/db.js';
+import { verifyAdminRequest } from './_lib/auth.js';
+import { handlePreflight, methodNotAllowed, serverError, unauthorized } from './_lib/http.js';
 
 // GET    /api/skills                -> categories with nested skills (public)
 // POST   /api/skills  { entity: 'category' | 'skill', ... }       (admin)
