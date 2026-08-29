@@ -27,8 +27,25 @@ export default function Certifications() {
                 <Grid item xs={12} sm={6} md={4} key={cert.id}>
                   <Card variant="outlined" sx={{ height: '100%', display: 'flex', flexDirection: 'column', borderRadius: 3 }}>
                     {cert.image_url ? (
-                      <CardMedia component="img" image={cert.image_url} alt={cert.name} sx={{ height: 160, objectFit: 'contain', bgcolor: 'background.default', p: 2 }} />
-                    ) : (
+  <Box
+    sx={{
+      height: 160,
+      bgcolor: 'background.default',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      p: 2,
+      overflow: 'hidden',
+    }}
+  >
+    <Box
+      component="img"
+      src={cert.image_url}
+      alt={cert.name}
+      sx={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }}
+    />
+  </Box>
+) : (
                       <Box sx={{ height: 160, bgcolor: 'background.default', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         <VerifiedIcon sx={{ fontSize: 48, color: 'text.secondary' }} />
                       </Box>
