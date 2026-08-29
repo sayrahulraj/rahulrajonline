@@ -1,5 +1,5 @@
 import {
-  Container, Grid, Card, CardMedia, CardContent, CardActions, Typography, Button, Skeleton, Box, Chip,
+  Container, Grid, Card, CardContent, CardActions, Typography, Button, Skeleton, Box, Chip,
 } from '@mui/material';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import VerifiedIcon from '@mui/icons-material/Verified';
