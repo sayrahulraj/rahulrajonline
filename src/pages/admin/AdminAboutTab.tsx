@@ -23,7 +23,7 @@ export default function AdminAboutTab() {
   const [updateAchievement] = useUpdateAchievementMutation();
   const [deleteAchievement] = useDeleteAchievementMutation();
 
-  const [form, setForm] = useState({ passion_title: '', passion_text: '', journey_text: '' });
+  const [form, setForm] = useState({ passion_title: '', passion_text: '', journey_text: '', years_experience: '', technologies_count: '' });
   const [status, setStatus] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [dialog, setDialog] = useState<{ open: boolean; editing: any | null }>({ open: false, editing: null });
 
@@ -33,6 +33,8 @@ export default function AdminAboutTab() {
         passion_title: data.about.passion_title || '',
         passion_text: data.about.passion_text || '',
         journey_text: data.about.journey_text || '',
+        years_experience: data.about.years_experience || '',
+        technologies_count: data.about.technologies_count || '',
       });
     }
   }, [data]);
@@ -84,6 +86,22 @@ export default function AdminAboutTab() {
           minRows={6}
           helperText="Use line breaks freely — they're preserved on the About page."
         />
+        <Stack direction="row" spacing={2.5}>
+          <TextField
+            label="Years of experience"
+            value={form.years_experience}
+            onChange={(e) => setForm((f) => ({ ...f, years_experience: e.target.value }))}
+            helperText='Shown as a stat tile, e.g. "5+"'
+            fullWidth
+          />
+          <TextField
+            label="Technologies"
+            value={form.technologies_count}
+            onChange={(e) => setForm((f) => ({ ...f, technologies_count: e.target.value }))}
+            helperText='Shown as a stat tile, e.g. "3+"'
+            fullWidth
+          />
+        </Stack>
       </Stack>
       <Button
         variant="contained"

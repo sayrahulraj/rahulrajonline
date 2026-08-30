@@ -42,7 +42,7 @@ export const api = createApi({
       query: () => '/about',
       providesTags: ['About', 'Achievements'],
     }),
-    updateAbout: builder.mutation<AboutResponse['about'], { passion_title?: string; passion_text?: string; journey_text?: string }>({
+    updateAbout: builder.mutation<AboutResponse['about'], { passion_title?: string; passion_text?: string; journey_text?: string; years_experience?: string; technologies_count?: string }>({
       query: (body) => ({ url: '/about', method: 'PUT', body }),
       invalidatesTags: ['About'],
     }),

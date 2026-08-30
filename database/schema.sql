@@ -57,9 +57,15 @@ CREATE TABLE IF NOT EXISTS about_me (
   passion_title TEXT,
   passion_text TEXT,
   journey_text TEXT,      -- long-form professional journey (markdown/plain text)
+  years_experience TEXT DEFAULT '5+',    -- free-form stat label, e.g. "5+"
+  technologies_count TEXT DEFAULT '3+',  -- free-form stat label, e.g. "3+"
   updated_at TIMESTAMPTZ DEFAULT now(),
   CONSTRAINT single_row_about CHECK (id = 1)
 );
+
+-- Safe to re-run against a database created before these columns existed.
+ALTER TABLE about_me ADD COLUMN IF NOT EXISTS years_experience TEXT DEFAULT '5+';
+ALTER TABLE about_me ADD COLUMN IF NOT EXISTS technologies_count TEXT DEFAULT '3+';
 
 INSERT INTO about_me (id, passion_title, passion_text, journey_text)
 VALUES (

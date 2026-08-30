@@ -22,12 +22,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       const admin = verifyAdminRequest(req);
       if (!admin) return unauthorized(res);
 
-      const { passion_title, passion_text, journey_text } = req.body || {};
+      const { passion_title, passion_text, journey_text, years_experience, technologies_count } = req.body || {};
       const rows = await sql`
         UPDATE about_me SET
           passion_title = COALESCE(${passion_title}, passion_title),
           passion_text = COALESCE(${passion_text}, passion_text),
           journey_text = COALESCE(${journey_text}, journey_text),
+          years_experience = COALESCE(${years_experience}, years_experience),
+          technologies_count = COALESCE(${technologies_count}, technologies_count),
           updated_at = now()
         WHERE id = 1
         RETURNING *

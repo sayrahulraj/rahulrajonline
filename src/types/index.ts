@@ -17,6 +17,8 @@ export interface AboutMe {
   passion_title: string | null;
   passion_text: string | null;
   journey_text: string | null;
+  years_experience: string | null;
+  technologies_count: string | null;
 }
 
 export interface Achievement {
