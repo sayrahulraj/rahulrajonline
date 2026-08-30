@@ -3,8 +3,7 @@ import { sql } from './_lib/db.js';
 import { verifyAdminRequest } from './_lib/auth.js';
 import { handlePreflight, methodNotAllowed, serverError, unauthorized } from './_lib/http.js';
 
-// The actual email delivery happens client-side via EmailJS. This endpoint
-// just keeps a durable record of every message submitted through the form.
+// EmailJS handles the actual sending client-side, this just logs the message to the db
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (handlePreflight(req, res)) return;
 

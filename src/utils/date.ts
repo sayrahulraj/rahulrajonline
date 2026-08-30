@@ -18,7 +18,7 @@ export function formatFullDate(dateStr: string | null): string {
   return d.toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' });
 }
 
-/** Splits an admin-entered block of text into bullet lines (newline separated). */
+// admin pastes a block of text, we split it into bullet lines
 export function toBulletList(text: string | null | undefined): string[] {
   if (!text) return [];
   return text

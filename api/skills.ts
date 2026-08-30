@@ -3,10 +3,8 @@ import { sql } from './_lib/db.js';
 import { verifyAdminRequest } from './_lib/auth.js';
 import { handlePreflight, methodNotAllowed, serverError, unauthorized } from './_lib/http.js';
 
-// GET    /api/skills                -> categories with nested skills (public)
-// POST   /api/skills  { entity: 'category' | 'skill', ... }       (admin)
-// PUT    /api/skills  { entity, id, ... }                          (admin)
-// DELETE /api/skills?entity=category|skill&id=123                 (admin)
+// same deal as experience.ts — GET is public, everything else needs admin,
+// and entity picks between 'category' and 'skill'
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (handlePreflight(req, res)) return;
 

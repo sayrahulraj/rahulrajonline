@@ -1,18 +1,13 @@
--- ============================================================================
--- Rahul Raj Portfolio — Neon (Postgres) schema
--- Run this once against your Neon database (SQL editor or psql).
--- ============================================================================
+-- portfolio schema, run once against Neon (SQL editor or psql)
 
 -- Required only once per database
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
 
--- ----------------------------------------------------------------------------
--- 1. Admin login (single user, plain-text credentials as requested)
--- ----------------------------------------------------------------------------
+-- admin login (just one user, plain-text password — see README security note)
 CREATE TABLE IF NOT EXISTS admin_users (
   id SERIAL PRIMARY KEY,
   username TEXT UNIQUE NOT NULL,
-  password TEXT NOT NULL, -- stored in PLAIN TEXT per project requirement
+  password TEXT NOT NULL, -- yes, plain text — intentional, not a mistake
   created_at TIMESTAMPTZ DEFAULT now()
 );
 
@@ -20,9 +15,7 @@ INSERT INTO admin_users (username, password)
 VALUES ('rahulraj.ai', 'RudraDev')
 ON CONFLICT (username) DO NOTHING;
 
--- ----------------------------------------------------------------------------
--- 2. Home / hero section (single row — id 1)
--- ----------------------------------------------------------------------------
+-- home / hero section, single row
 CREATE TABLE IF NOT EXISTS home_profile (
   id INT PRIMARY KEY DEFAULT 1,
   greeting TEXT NOT NULL DEFAULT 'Hi, I''m',
@@ -49,9 +42,7 @@ VALUES (
 )
 ON CONFLICT (id) DO NOTHING;
 
--- ----------------------------------------------------------------------------
--- 3. About page
--- ----------------------------------------------------------------------------
+-- about page
 CREATE TABLE IF NOT EXISTS about_me (
   id INT PRIMARY KEY DEFAULT 1,
   passion_title TEXT,
@@ -63,7 +54,7 @@ CREATE TABLE IF NOT EXISTS about_me (
   CONSTRAINT single_row_about CHECK (id = 1)
 );
 
--- Safe to re-run against a database created before these columns existed.
+-- safe to re-run on an older db that doesn't have these columns yet
 ALTER TABLE about_me ADD COLUMN IF NOT EXISTS years_experience TEXT DEFAULT '5+';
 ALTER TABLE about_me ADD COLUMN IF NOT EXISTS technologies_count TEXT DEFAULT '3+';
 
@@ -84,9 +75,7 @@ CREATE TABLE IF NOT EXISTS achievements (
   created_at TIMESTAMPTZ DEFAULT now()
 );
 
--- ----------------------------------------------------------------------------
--- 4. Skills page — grouped by category
--- ----------------------------------------------------------------------------
+-- skills page, grouped by category
 CREATE TABLE IF NOT EXISTS skill_categories (
   id SERIAL PRIMARY KEY,
   name TEXT NOT NULL,          -- e.g. "Language & Framework"
@@ -113,9 +102,7 @@ INSERT INTO skill_categories (name, sort_order) VALUES
  ('AI-Augmented Engineering', 9)
 ON CONFLICT DO NOTHING;
 
--- ----------------------------------------------------------------------------
--- 5. Experience page — companies + nested projects
--- ----------------------------------------------------------------------------
+-- experience page — companies with nested projects
 CREATE TABLE IF NOT EXISTS experiences (
   id SERIAL PRIMARY KEY,
   company_name TEXT NOT NULL,
@@ -138,9 +125,7 @@ CREATE TABLE IF NOT EXISTS experience_projects (
   sort_order INT DEFAULT 0
 );
 
--- ----------------------------------------------------------------------------
--- 6. Projects page (portfolio projects, independent of employer)
--- ----------------------------------------------------------------------------
+-- projects page (personal projects, not tied to an employer)
 CREATE TABLE IF NOT EXISTS projects (
   id SERIAL PRIMARY KEY,
   photo_url TEXT,
@@ -152,9 +137,7 @@ CREATE TABLE IF NOT EXISTS projects (
   created_at TIMESTAMPTZ DEFAULT now()
 );
 
--- ----------------------------------------------------------------------------
--- 7. Certifications page
--- ----------------------------------------------------------------------------
+-- certifications page
 CREATE TABLE IF NOT EXISTS certifications (
   id SERIAL PRIMARY KEY,
   image_url TEXT,
@@ -167,9 +150,7 @@ CREATE TABLE IF NOT EXISTS certifications (
   created_at TIMESTAMPTZ DEFAULT now()
 );
 
--- ----------------------------------------------------------------------------
--- 8. Contact page — static contact info (single row) + map + inbound messages
--- ----------------------------------------------------------------------------
+-- contact page — static info + map coords, plus the inbound messages table below
 CREATE TABLE IF NOT EXISTS contact_info (
   id INT PRIMARY KEY DEFAULT 1,
   email TEXT,
@@ -187,8 +168,7 @@ INSERT INTO contact_info (id, email, phone, location, map_lat, map_lng, github_u
 VALUES (1, 'you@example.com', '+91 90000 00000', 'Hyderabad, India', 17.3850, 78.4867, 'https://github.com/', 'https://linkedin.com/')
 ON CONFLICT (id) DO NOTHING;
 
--- Optional: log of messages submitted through the contact form (EmailJS sends the
--- actual email client-side; this table is just a durable record).
+-- just a durable log — EmailJS actually sends the email client-side
 CREATE TABLE IF NOT EXISTS contact_messages (
   id SERIAL PRIMARY KEY,
   name TEXT NOT NULL,
@@ -198,9 +178,7 @@ CREATE TABLE IF NOT EXISTS contact_messages (
   created_at TIMESTAMPTZ DEFAULT now()
 );
 
--- ----------------------------------------------------------------------------
--- 9. Site-wide settings (footer, resume PDF, etc.)
--- ----------------------------------------------------------------------------
+-- site-wide settings (resume PDF url, etc.)
 CREATE TABLE IF NOT EXISTS site_settings (
   id INT PRIMARY KEY DEFAULT 1,
   resume_pdf_url TEXT,

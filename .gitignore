@@ -22,12 +22,11 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
--e 
-# Environment variables
-.env
-.env.local
+
+# Environment variables — keep .env.example tracked as the template
+.env*
+!.env.example
+
+# Vercel / Neon local project links
 .vercel
 .neon
-
-.vercel
-.env*

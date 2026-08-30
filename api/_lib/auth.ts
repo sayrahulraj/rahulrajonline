@@ -12,10 +12,8 @@ export function signAdminToken(payload: AdminTokenPayload): string {
   return jwt.sign(payload, JWT_SECRET, { expiresIn: '12h' });
 }
 
-/**
- * Verifies the `Authorization: Bearer <token>` header on a request.
- * Returns the decoded payload if valid, or null if missing/invalid/expired.
- */
+// checks the Authorization: Bearer header, returns the payload or null if
+// it's missing/bad/expired
 export function verifyAdminRequest(req: VercelRequest): AdminTokenPayload | null {
   const header = req.headers.authorization || '';
   const [scheme, token] = header.split(' ');

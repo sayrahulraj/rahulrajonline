@@ -3,10 +3,8 @@ import { sql } from './_lib/db.js';
 import { verifyAdminRequest } from './_lib/auth.js';
 import { handlePreflight, methodNotAllowed, serverError, unauthorized } from './_lib/http.js';
 
-// GET    /api/experience                       -> companies with nested projects (public)
-// POST   /api/experience { entity: 'company'|'project', ... }          (admin)
-// PUT    /api/experience { entity, id, ... }                            (admin)
-// DELETE /api/experience?entity=company|project&id=123                  (admin)
+// GET is public (companies + their nested projects), everything else needs admin.
+// entity param picks between 'company' and 'project' since they share this route.
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (handlePreflight(req, res)) return;
 
@@ -58,8 +56,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       if (!body.id) return res.status(400).json({ error: 'id is required.' });
       if (body.entity === 'company') {
         const { id, company_name, role, start_date, end_date, domain, description, sort_order } = body;
-        // end_date is intentionally nullable (a null means "currently working here"),
-        // so it is only touched when the field is explicitly present in the request.
+        // null end_date = still working there, only touch it if the client actually sent it
         const nextEndDate = Object.prototype.hasOwnProperty.call(body, 'end_date') ? (end_date || null) : null;
         const rows = Object.prototype.hasOwnProperty.call(body, 'end_date')
           ? await sql`

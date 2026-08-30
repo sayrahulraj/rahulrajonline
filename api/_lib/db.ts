@@ -1,12 +1,11 @@
 import { neon } from '@neondatabase/serverless';
 
-// DATABASE_URL must be set in Vercel project settings (Neon connection string,
-// e.g. postgresql://user:pass@ep-xxxx.neon.tech/neondb?sslmode=require)
+// needs to be set in Vercel project settings — pooled Neon connection string
 const connectionString = process.env.DATABASE_URL;
 
 if (!connectionString) {
-  // We don't throw at import time so the function can still return a clean
-  // 500 with a helpful message instead of crashing the whole bundle.
+  // not throwing here on purpose, otherwise the whole function crashes at
+  // import time instead of just this one request returning a 500
   console.error('DATABASE_URL environment variable is not set.');
 }
 

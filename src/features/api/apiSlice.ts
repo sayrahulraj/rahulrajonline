@@ -6,8 +6,7 @@ import type {
   ContactInfo, ContactMessage, SiteSettings,
 } from '../../types';
 
-// In dev, Vite proxies /api to `vercel dev` (see vite.config.ts). In prod on
-// Vercel, /api is served by the same deployment, so a relative path works everywhere.
+// relative path works in both dev (vite proxies it) and prod (same deployment)
 const BASE_URL = '/api';
 
 export const api = createApi({
@@ -22,12 +21,12 @@ export const api = createApi({
   }),
   tagTypes: ['Home', 'About', 'Achievements', 'Skills', 'Experience', 'Projects', 'Certifications', 'ContactInfo', 'Messages', 'Settings'],
   endpoints: (builder) => ({
-    // ---------------- Auth ----------------
+    // auth
     login: builder.mutation<{ token: string; username: string }, { username: string; password: string }>({
       query: (body) => ({ url: '/auth/login', method: 'POST', body }),
     }),
 
-    // ---------------- Home ----------------
+    // home
     getHome: builder.query<HomeProfile, void>({
       query: () => '/home',
       providesTags: ['Home'],
@@ -37,7 +36,7 @@ export const api = createApi({
       invalidatesTags: ['Home'],
     }),
 
-    // ---------------- About ----------------
+    // about
     getAbout: builder.query<AboutResponse, void>({
       query: () => '/about',
       providesTags: ['About', 'Achievements'],
@@ -59,7 +58,7 @@ export const api = createApi({
       invalidatesTags: ['Achievements'],
     }),
 
-    // ---------------- Skills ----------------
+    // skills
     getSkills: builder.query<SkillCategory[], void>({
       query: () => '/skills',
       providesTags: ['Skills'],
@@ -89,7 +88,7 @@ export const api = createApi({
       invalidatesTags: ['Skills'],
     }),
 
-    // ---------------- Experience ----------------
+    // experience
     getExperience: builder.query<Experience[], void>({
       query: () => '/experience',
       providesTags: ['Experience'],
@@ -119,7 +118,7 @@ export const api = createApi({
       invalidatesTags: ['Experience'],
     }),
 
-    // ---------------- Projects ----------------
+    // projects
     getProjects: builder.query<Project[], void>({
       query: () => '/projects',
       providesTags: ['Projects'],
@@ -137,7 +136,7 @@ export const api = createApi({
       invalidatesTags: ['Projects'],
     }),
 
-    // ---------------- Certifications ----------------
+    // certifications
     getCertifications: builder.query<Certification[], void>({
       query: () => '/certifications',
       providesTags: ['Certifications'],
@@ -155,7 +154,7 @@ export const api = createApi({
       invalidatesTags: ['Certifications'],
     }),
 
-    // ---------------- Contact ----------------
+    // contact
     getContactInfo: builder.query<ContactInfo, void>({
       query: () => '/contact-info',
       providesTags: ['ContactInfo'],
@@ -172,7 +171,7 @@ export const api = createApi({
       providesTags: ['Messages'],
     }),
 
-    // ---------------- Settings ----------------
+    // settings
     getSettings: builder.query<SiteSettings, void>({
       query: () => '/settings',
       providesTags: ['Settings'],

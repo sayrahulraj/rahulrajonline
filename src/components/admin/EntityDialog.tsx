@@ -23,7 +23,7 @@ interface Props {
   onSubmit: (values: Record<string, any>) => void;
 }
 
-/** Converts stored values (arrays, numbers) into editable strings for text inputs. */
+// arrays/numbers -> plain strings so they can sit in a text input
 function toEditable(fields: FieldConfig[], values: Record<string, any>) {
   const out: Record<string, string> = {};
   for (const f of fields) {

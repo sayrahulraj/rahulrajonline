@@ -1,12 +1,32 @@
-# Rahul Raj Online — Portfolio
+# Rahul Raj — Portfolio
 
-A full-stack portfolio site: React 18+ (Vite, TypeScript, Redux Toolkit, MUI) on the
+[![React](https://img.shields.io/badge/React-19-149ECA?logo=react&logoColor=white)](https://react.dev)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org)
+[![Vite](https://img.shields.io/badge/Vite-7-646CFF?logo=vite&logoColor=white)](https://vite.dev)
+[![Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-000000?logo=vercel&logoColor=white)](https://vercel.com)
+[![Neon](https://img.shields.io/badge/Database-Neon%20Postgres-00E599?logo=postgresql&logoColor=white)](https://neon.tech)
+
+A full-stack personal portfolio: React 19 (Vite, TypeScript, Redux Toolkit, MUI) on the
 frontend, Vercel serverless functions + Neon Postgres on the backend, EmailJS for the
-contact form, and Cloudflare for hosting the resume PDF / project & certificate images.
+contact form, and Cloudflare for hosting the resume PDF and project/certificate images.
 
-Every piece of content (home intro, about, skills, experience, projects, certifications,
-contact info) is driven from Neon and editable through a password-protected `/admin`
-dashboard — no redeploy needed to update content.
+Every piece of content — home intro, about, skills, experience, projects,
+certifications, contact info — is driven from Neon and editable through a
+password-protected `/admin` dashboard. No redeploy needed to update content.
+
+---
+
+## Features
+
+- **Fully dynamic content** — every public page reads from Postgres via a typed REST
+  API; editing content is a form submission, not a code change
+- **Admin dashboard** (`/admin`) — tabbed CRUD for every section of the site, built on
+  a small set of reusable form/list components rather than one-off screens per resource
+- **JWT-authenticated admin session**, checked on every mutating API call
+- **Animated hero terminal** on the homepage, rotating through configurable skills
+- **Contact form** wired to EmailJS, with every submission also logged to Postgres
+- **Single Vercel deployment** for both the static frontend and the API — no separate
+  backend hosting
 
 ---
 
@@ -14,7 +34,7 @@ dashboard — no redeploy needed to update content.
 
 | Layer          | Technology                                              |
 |----------------|----------------------------------------------------------|
-| Frontend       | React 18+, Vite, TypeScript, Redux Toolkit (+ RTK Query), MUI |
+| Frontend       | React 19, Vite, TypeScript, Redux Toolkit (+ RTK Query), MUI |
 | Backend        | Vercel Serverless Functions (Node/TypeScript, `/api`)   |
 | Database       | Neon (serverless Postgres)                              |
 | Auth           | JWT-signed session, single admin user checked against Neon |
@@ -31,8 +51,7 @@ dashboard — no redeploy needed to update content.
 1. Create a project at [neon.tech](https://neon.tech).
 2. Open the SQL editor and run **`database/schema.sql`** from this repo. It creates every
    table and seeds:
-   - the admin login (`rahulraj.ai` / `RudraDev`, stored in plain text as requested — see
-     the security note below)
+   - the admin login (see the security note below for how the credentials work)
    - a starter `home_profile` row so the homepage isn't empty on first load
 3. Copy the **pooled connection string** (Dashboard → your project → Connection Details).
 
@@ -60,12 +79,13 @@ cp .env.example .env
 
 Fill in:
 - `DATABASE_URL` — your Neon pooled connection string
-- `JWT_SECRET` — any long random string
+- `JWT_SECRET` — a long random string (e.g. `openssl rand -hex 32`)
 - `VITE_EMAILJS_SERVICE_ID`, `VITE_EMAILJS_TEMPLATE_ID`, `VITE_EMAILJS_PUBLIC_KEY` — from EmailJS
 
-When you deploy to Vercel, add the same variables under **Project Settings → Environment
-Variables** (the `VITE_*` ones will be baked into the client bundle at build time; the
-others stay server-side).
+`.env.example` ships with placeholder values only — never commit real credentials to
+it. When you deploy to Vercel, add the same variables under **Project Settings →
+Environment Variables** (the `VITE_*` ones will be baked into the client bundle at
+build time; the others stay server-side).
 
 ---
 
@@ -96,19 +116,25 @@ npm run dev
 
 Then open the Vite URL (usually `http://localhost:5173`).
 
+### Other scripts
+
+```bash
+npm run build     # tsc -b && vite build — type-checks, then builds for production
+npm run lint       # oxlint
+npm run preview   # preview the production build locally
+```
+
 ---
 
 ## 4. Signing in and adding your content
 
 1. Go to `/signin`.
-2. Log in with the credentials seeded in `database/schema.sql`:
-   - Username: `rahulraj.ai`
-   - Password: `RudraDev`
+2. Log in with the admin credentials seeded in `database/schema.sql`.
 3. You'll land on `/admin`, a tabbed dashboard covering Home, About, Skills, Experience,
    Projects, Certifications, and Contact. Every tab reads/writes straight to Neon —
    changes appear on the public site immediately, no rebuild required.
-4. **Change the admin password** by updating the `admin_users` table in Neon once you're
-   set up (see security note below).
+4. **Change the seeded password immediately** by updating the `admin_users` table in
+   Neon before this deployment is used for anything real — see the security note below.
 
 ---
 
@@ -120,6 +146,10 @@ Then open the Vite URL (usually `http://localhost:5173`).
 3. Add the environment variables from step 2.4 in Project Settings.
 4. Deploy. Your site and API are now live on the same domain — no separate backend hosting
    needed.
+
+`vercel.json` defines the SPA fallback rewrite (`/some-route` → `/index.html` for
+client-side routes) while leaving `/api/*` and real static assets untouched. If you ever
+see 404s on a hard refresh of a route like `/about`, this file is the first place to check.
 
 ---
 
@@ -158,18 +188,25 @@ src/
 
 ## 7. Security note
 
-Per the project requirements, the admin username/password are stored in **plain text** in
-the `admin_users` table and compared directly on login. This is intentionally simple but
-is **not a best practice** for production systems handling anything sensitive. If you want
-to harden it later: hash the password with bcrypt before storing it, compare with
-`bcrypt.compare()` in `api/auth/login.ts`, and rotate `JWT_SECRET` periodically.
+The admin username/password are stored and compared in **plain text** in the
+`admin_users` table — a deliberate simplification for a single-owner personal site, not
+a best practice for production systems handling anything sensitive. Before treating a
+deployment as live/public:
+
+- Change the seeded password by updating the `admin_users` table directly in Neon.
+- If you want to harden this further: hash the password with bcrypt before storing it,
+  compare with `bcrypt.compare()` in `api/auth/login.ts`, and rotate `JWT_SECRET`
+  periodically.
+- Never commit real values for `DATABASE_URL`, `JWT_SECRET`, or the EmailJS keys —
+  `.gitignore` excludes every `.env*` file except `.env.example`, which should only ever
+  contain placeholders.
 
 ---
 
 ## 8. Content model (what lives in Neon)
 
 - **`home_profile`** — greeting, name, role, interest line, summary, resume/GitHub/LinkedIn/email links, rotating skill list for the animated hero
-- **`about_me`** + **`achievements`** — passion statement, career journey text, achievement cards
+- **`about_me`** + **`achievements`** — passion statement, career journey text, achievement cards, and the stat-tile figures shown on the About page (years of experience, technologies)
 - **`skill_categories`** + **`skills`** — the 9 grouped stacks (Language & Framework, Architecture & Integration, Frontend Development, API Security & Documentation, Data & Caching, DevOps & CI/CD, Testing & Quality, Agile Collaboration, AI-Augmented Engineering)
 - **`experiences`** + **`experience_projects`** — companies, roles, date ranges, domain, and nested projects with responsibilities/achievements/tech stack
 - **`projects`** — standalone portfolio projects with photo, description, tech stack, GitHub link

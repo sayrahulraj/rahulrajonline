@@ -1,6 +1,4 @@
-// Design tokens for the portfolio.
-// Identity: enterprise Java (coffee amber) meets AI-augmented engineering (signal cyan),
-// staged on an IDE-dark canvas. Avoids the generic "warm cream + terracotta" AI look.
+// amber = Java heritage, cyan = the AI/ML side of things. dark IDE-style bg by default.
 
 export const colors = {
   dark: {

@@ -6,8 +6,8 @@ export function applyCors(req: VercelRequest, res: VercelResponse) {
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 }
 
-/** Call at the top of every handler. Returns true if the request was an
- * OPTIONS preflight and has already been responded to (caller should return). */
+// call this first in every handler — if it returns true, the OPTIONS
+// preflight has already been answered and you should just return
 export function handlePreflight(req: VercelRequest, res: VercelResponse): boolean {
   applyCors(req, res);
   if (req.method === 'OPTIONS') {
